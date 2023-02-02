@@ -4,16 +4,20 @@ import { Task } from "./Task";
 import "./TasksList.css";
 
 type TaskListprops = {
-    tasks: TaskType[]
+    tasks: TaskType[];
+    deleteTask: (taskId: number) => void;
+    editTask: (taskId: number) => void;
 };
 
-export const TasksList = ({tasks}: TaskListprops) => {
+export const TasksList = ({tasks, deleteTask, editTask}: TaskListprops) => {
     return (
-        <div>
+        <>
             {tasks.map((task) => (
-            <Task task={task}/>
-          ))}
-          <p>hello</p>
-        </div>
+            <Task task={task}
+            key={task.id}
+            deleteTask={deleteTask} 
+            editTask={editTask}
+            />))}
+        </>
     )
 }

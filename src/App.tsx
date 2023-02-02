@@ -6,28 +6,55 @@ import { data } from "./data/tasks";
 import { Header } from './components/Header';
 import { TaskType } from './components/model/Task';
 import { TasksList } from "./components/TasksList";
+import { useState } from "react";
+import { Test } from "./components/Test";
+
 
 const App = () => {
   const title = "To do list";
-  const tasks = data;
-  console.log(tasks)
-  const taskToEdit: any = null;
+  const [taskToEdit, setTaskToEdit] = useState<TaskType | null> (null);
+  const [showModal, setShowModal] = useState(false);
+  const [tasks, setTasks] = useState(data);
 
   const updateTaskState = (taskId: number) => {
+    
     console.error("I need to be implemented");
   };
-
-  const addOrEditTask = (event: any, taskToEditId?: number) => {
+                                          
+  const addOrEditTask = (event: any, taskToEditId?: number, form?: any) => {
     event.preventDefault();
-    console.error("I need to be implemented");
-  };
+    if (taskToEditId != null) {
+      const taskToEdit = tasks.find(task => task.id === taskToEditId);
+      if (taskToEdit) {
+        taskToEdit.title = event.target.title.value;
+        taskToEdit.description = event.target.description.value;
+      }
+      setTaskToEdit(null)
+    } else {
+        const newTasks: TaskType =  {
+          done: false,
+          id: tasks[tasks.length-1].id + 1,
+          title: event.target.title.value,
+          description: event.target.description.value,
+        }
+        setTasks([...tasks, newTasks]);
+      };  
+    }
+
 
   const editTask = (taskId: number) => {
-    console.error("I need to be implemented");
+    const copyTask = tasks.find(task => task.id === taskId);
+    if(copyTask){
+      setTaskToEdit(copyTask);
+    };
+
+    setShowModal(true);
+  
   };
 
   const deleteTask = (taskId: number) => {
-    console.error("I need to be implemented");
+    setTasks((avent) => avent.filter((task) => task.id !== taskId))
+    // setTasks((perv) => perv.filter((task) => task.id !== taskId))
   };
 
   return (
@@ -35,19 +62,23 @@ const App = () => {
       <Header
       title= {title}
       />
-      <TasksList tasks= {tasks} />
       
-      
+      <Test test="blabla" />
+      <TasksList tasks= {tasks}
+      editTask={editTask}
+      deleteTask={deleteTask} />
       <button
         className="add-task-btn"
-        onClick={() => console.log("this button should open the modal")}
-      >
+        onClick={() => setShowModal(true)}
+        >
         +
       </button>
       <TaskFormModal
-        show={false}
-        handleClose={() =>
-          console.log("pass me a method that will close the modal")
+        show={showModal}
+        handleClose={()=>{
+          setShowModal(false)
+        }
+
         }
         addOrEditTask={addOrEditTask}
         initialValues={
