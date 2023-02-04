@@ -41,7 +41,6 @@ const App = () => {
       };  
     }
 
-
   const editTask = (taskId: number) => {
     const copyTask = tasks.find(task => task.id === taskId);
     if(copyTask){
